@@ -65,7 +65,11 @@ angular.module('todomvc')
 		$scope.pushTODO = function (todo) {
 			todoStorage.updateTODO($scope.targetUser, todo)
 			.success(function (response) {
-				$scope.currentVersion = response.version;
+				// if remote version is not increment by 1, then sync
+				if ($scope.currentVersion + 1 == response.version)
+					$scope.currentVersion = response.version;
+				else
+					getTODOS();
 			})
 			.error(function(error) {
 				window.alert('The modification you made fails to sync with server due to some unknown reasons, sorry to hear that.');
@@ -79,9 +83,9 @@ angular.module('todomvc')
 
 		updateInterval = $interval(function() {
         	checkUpdate();
-      	}, 3000);
+		}, 3000);
 
-      	$scope.$on("$destroy", function(){
+		$scope.$on("$destroy", function(){
 	        $interval.cancel(updateInterval);
 	    });
 
@@ -164,11 +168,15 @@ angular.module('todomvc')
 			};
 			todoStorage.addTODO($scope.targetUser, todoObj)
 			.success(function(response) {
-				$scope.currentVersion = response.version;
 				todoObj.rowid = response.rowid;
 				if (todoObj.rowid) {
 					$scope.todos.push(todoObj);
 					$scope.notify("New todo is at bottom.");
+					// if remote version is not increment by 1, then sync
+					if ($scope.currentVersion + 1 == response.version)
+						$scope.currentVersion = response.version;
+					else
+						getTODOS();
 				}
 				else {
 					$scope.notify("failed to add todo.");
@@ -176,11 +184,6 @@ angular.module('todomvc')
 			}).error(function(error) {
 				$scope.notify("failed to add todo.");
 			});
-
-
-			//$scope.todos = todos;
-
-
 			$scope.newTodo = '';
 			$scope.newDue = '';
 
@@ -220,7 +223,11 @@ angular.module('todomvc')
 				.success(function(response) {
 					if (response.success) {
 						$scope.todos.splice($scope.todos.indexOf(todo), 1);
-						$scope.currentVersion = response.version;
+						// if remote version is not increment by 1, then sync
+						if ($scope.currentVersion + 1 == response.version)
+							$scope.currentVersion = response.version;
+						else
+							getTODOS();
 					}
 					else
 						$scope.notify("failed to remove todo.");
