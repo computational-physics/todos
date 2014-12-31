@@ -1,0 +1,9 @@
+{
+  "name": "todomvc-angular",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "~1.2.22",
+    "angular-route": "~1.2.22",
+    "ngQuickDate": "~1.3.3"
+  }
+}
