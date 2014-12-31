@@ -31,6 +31,19 @@ angular.module('todomvc')
         });
     };
 
+    todoStorage.getArchivedTODOS = function (user) {
+        data = {
+            'q': 'get',
+            't_user': user, 
+            'archived': 1
+        };
+        return $http({
+            method: "POST",
+            url: urlBase, 
+            data: data
+        });
+    };
+
     todoStorage.addTODO = function (user, todo) {
         data = {
             'q': 'add',

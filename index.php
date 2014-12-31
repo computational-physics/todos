@@ -100,13 +100,10 @@ if ($debug) {
 					</span>
 					<ul id="filters">
 						<li>
-							<a ng-class="{selected: status == ''} " href="#/">All</a>
+							<a ng-class="{selected: status == ''} " href="#/">Recent</a>
 						</li>
 						<li>
-							<a ng-class="{selected: status == 'active'}" href="#/active">Active</a>
-						</li>
-						<li>
-							<a ng-class="{selected: status == 'completed'}" href="#/completed">Completed</a>
+							<a ng-class="{selected: status == 'archived'}" href="#/archived">Archived</a>
 						</li>
 					</ul>
 					<button id="clear-completed" ng-click="clearCompletedTodos()" ng-show="completedCount">Clear completed ({{completedCount}})</button>

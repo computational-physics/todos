@@ -31,7 +31,29 @@ class TodoDB extends SQLite3
     $results = $this->exec('UPDATE version SET version = ' . $version);
   }
 
-  function queryAll() {
+  // get uncompleted task and completed within a month
+  function isRecent($completed, $finish_date) {
+    if ($finish_date) {
+        $finish_date = date_create_from_format('Y-m-d', 
+            $finish_date);
+        $now = new DateTime('now');
+        $diff = $finish_date->diff($now);
+        $diff_d = abs($diff->days);
+        if ($diff_d > 31 && $completed) {
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        if ($completed) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+  }
+
+  function queryAll($isRecent) {
     $results = $this->query('SELECT ROWID, * FROM todos');
     $todos = array();
     while ($row = $results->fetchArray()) {
@@ -42,9 +64,20 @@ class TodoDB extends SQLite3
         }
         if ($row['completed'] == 1) $row['completed'] = true;
         if ($row['completed'] == 0) $row['completed'] = false;
-        array_push($todos, $row);
+        
+        if ($this->isRecent($row['completed'], $row['finish_date']) == 
+            $isRecent)
+            array_push($todos, $row);
     }
     return $todos;
+  }
+
+  function queryRecent() {
+    return $this->queryAll(true);
+  }
+
+  function queryArchive() {
+    return $this->queryAll(false);
   }
 
   function insert($todo) {

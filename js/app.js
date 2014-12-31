@@ -58,10 +58,10 @@ angular.module('todomvc', ['ngRoute', 'ngQuickDate'], function($httpProvider) {
 			controller: 'TodoCtrl',
 			templateUrl: 'todomvc-index.html'
 		}).when('/:status', {
-			controller: 'TodoCtrl',
-			templateUrl: 'todomvc-index.html'
-		}).otherwise({
-			redirectTo: '/active'
+      controller: 'TodoCtrl',
+      templateUrl: 'todomvc-index.html'
+    }).otherwise({
+			redirectTo: '/'
 		});
 	});
 

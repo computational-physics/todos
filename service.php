@@ -19,7 +19,10 @@ try {
         exit();
     }
     if ($_POST['q'] == 'get') {
-        $todos = $db->queryAll();
+        $todos;
+        if (isset($_POST['archived']))
+            $todos = $db->queryArchive();
+        else $todos = $db->queryRecent();
         $version = $db->queryVersion();
         echo json_encode((object) array(
             'todos' => $todos,

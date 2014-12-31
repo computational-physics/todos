@@ -23,7 +23,7 @@ angular.module('todomvc')
 		$scope.todos = [];
 		$scope.originalTodos = [];
 
-		$scope.receiveUpdate = true;
+		$scope.isArchived = false;
 
 		function checkUpdate() {
 			if ($scope.editedTodo != null) return;
@@ -38,15 +38,27 @@ angular.module('todomvc')
 
 		function getTODOS() {
 			if ($scope.editedTodo != null) return;
-			todoStorage.getTODOS($scope.targetUser)
-			.success(function(response) {
-				$scope.currentVersion = response.version;
-				$scope.todos = response.todos;
-				$scope.notify("todos fetched :-)");
-			})
-			.error(function(error) {
-				$scope.notify("failed to get todos.");
-			});
+			if ($scope.isArchived) {
+				todoStorage.getArchivedTODOS($scope.targetUser)
+				.success(function(response) {
+					$scope.currentVersion = response.version;
+					$scope.todos = response.todos;
+					$scope.notify("archives fetched :-)");
+				})
+				.error(function(error) {
+					$scope.notify("failed to get todos.");
+				});
+			} else {
+				todoStorage.getTODOS($scope.targetUser)
+				.success(function(response) {
+					$scope.currentVersion = response.version;
+					$scope.todos = response.todos;
+					$scope.notify("todos fetched :-)");
+				})
+				.error(function(error) {
+					$scope.notify("failed to get todos.");
+				});
+			}
 		}
 
 		// push the modification of todo to server
@@ -124,10 +136,13 @@ angular.module('todomvc')
 		// Monitor the current route for changes and adjust the filter accordingly.
 		$scope.$on('$routeChangeSuccess', function () {
 			var status = $scope.status = $routeParams.status || '';
-
-			$scope.statusFilter = (status === 'active') ?
-				{ completed: false } : (status === 'completed') ?
-				{ completed: true } : null;
+			if (status == 'archived') {
+				$scope.isArchived = true;
+				getTODOS();
+			} else {
+				// back to '/'
+				window.location.hash = '/';
+			}
 		});
 
 		$scope.addTodo = function () {
