@@ -117,7 +117,10 @@ angular.module('todomvc')
 		$scope.mailTodo = function(todo) {
 			todoMailer.send(todo, $scope.targetUser)
 				.success(function(user) {
-					$scope.notify("notified " + user + ".");
+					if (user == '')
+						$scope.notify("Error.");
+					else
+						$scope.notify("notified " + user + ".");
 				});
 		}
 

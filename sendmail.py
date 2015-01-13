@@ -21,8 +21,8 @@ def send(username, filepath):
 
     todo = json.loads(lines[0])
     dueOn = ''
-    if 'due' in todo.keys() and str(todo['due']) != "":
-        dueOn = todo['due']
+    if 'due_date' in todo.keys() and str(todo['due_date']) != "":
+        dueOn = todo['due_date']
     else:
         dueOn = 'not specify'
 
@@ -38,7 +38,7 @@ Due on: %s
 
 Yours,
 TODO robot
-""" % (username, todo['title'].encode('ascii', 'ignore').decode('ascii'), todo['date'], dueOn)
+""" % (username, todo['title'].encode('ascii', 'ignore').decode('ascii'), todo['create_date'], dueOn)
     FROM = 'no-reply@ourphysics.org'
     TO = [mail]
     message = """\

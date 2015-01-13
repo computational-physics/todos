@@ -10,6 +10,8 @@ $filepath = 'tmp/' . md5($jsonStr) . '.json';
 file_put_contents($filepath, $jsonStr);
 $command = "/usr/bin/python /var/www/html/apps/todos/sendmail.py -u $username -f $filepath";
 $result = shell_exec($command);
+file_put_contents('mail.log', $command . '
+', FILE_APPEND);
 echo $result;
 // unlink($filepath);
 ?>
